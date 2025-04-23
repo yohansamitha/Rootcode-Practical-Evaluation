@@ -16,7 +16,7 @@ public class BookController {
     private BookService bookService;
 
     // Single endpoint for both listing and searching books
-    @GetMapping
+    @GetMapping("/available")
     public ResponseEntity<StandardResponse> getBooks(
             @RequestParam(required = false) String author,
             @RequestParam(required = false) Integer year) {
@@ -36,7 +36,7 @@ public class BookController {
         return ResponseEntity.ok(bookService.insert(bookDTO));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/find/{id}")
     public ResponseEntity<StandardResponse> getBookById(@PathVariable Integer id) {
         StandardResponse response = bookService.findById(id);
         return ResponseEntity.ok(response);

@@ -12,12 +12,12 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Integer> {
 
     @Query("SELECT new com.rootcode.practicalevaluation.dto.book.AvailableBookDTO(" +
-            "b.title, b.author, b.publishedYear, b.availableCopies) " +
+            "b.id, b.title, b.author, b.publishedYear, b.availableCopies) " +
             "FROM Book b WHERE b.availableCopies > 0")
     List<AvailableBookDTO> findAvailableBooksDTO();
 
     @Query("SELECT new com.rootcode.practicalevaluation.dto.book.AvailableBookDTO(" +
-            "b.title, b.author, b.publishedYear, b.availableCopies) " +
+            "b.id, b.title, b.author, b.publishedYear, b.availableCopies) " +
             "FROM Book b " +
             "WHERE (:author IS NULL OR LOWER(b.author) LIKE LOWER(CONCAT('%', :author, '%'))) " +
             "AND (:year IS NULL OR b.publishedYear = :year) " +

@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AvailableBookDTO {
+    private int id;
     private String title;
     private String author;
     private int publishedYear;

@@ -44,8 +44,7 @@ public class WebSecurityConfiguration {
 
     private static final String[] AUTH_WHITELIST = {"/login/**",
             "/api/users/register",
-            "/api/books",
-            "/api/books/**"};
+            "/api/books/available"};
 
     @Autowired
     private ObjectMapper objectMapper;
