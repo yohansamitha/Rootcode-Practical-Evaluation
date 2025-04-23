@@ -31,6 +31,11 @@ history. It is built using **Java**, **Spring Boot**, and **Maven**.
     - Optimized database queries for efficient data retrieval.
     - Stateless authentication ensures scalability and fast response times.
 
+6. **Error Handling**:
+    - Global exception handling for resource not found, bad requests, and validation errors.
+    - Proper error messages for invalid operations like unauthorized access, borrowing unavailable books, or returning
+      unborrowed books.
+
 ---
 
 ## Assumptions
@@ -65,15 +70,20 @@ history. It is built using **Java**, **Spring Boot**, and **Maven**.
 
 ### User APIs
 
-- **POST** `/api/users` - Create a new user.
+- **POST** `/api/users/register` - Create a new user.
 - **GET** `/api/users/history` - View borrowing history (requires authentication).
-- **PUT** `/api/users/{id}` - Update user details.
+- **GET** `/api/users/{id}` - Get user details by ID.
+- **PUT** `/api/users` - Update user details.
 - **DELETE** `/api/users/{id}` - Delete a user.
 
 ### Book APIs
 
 - **GET** `/api/books/available` - View all available books (public).
 - **GET** `/api/books/search` - Search books by author and published year (public).
+- **GET** `/api/books/find/{id}` - Get book details by ID.
+- **POST** `/api/books` - Add a new book.
+- **PUT** `/api/books` - Update book details.
+- **DELETE** `/api/books/{id}` - Delete a book.
 
 ### Borrow APIs
 
@@ -113,7 +123,8 @@ history. It is built using **Java**, **Spring Boot**, and **Maven**.
 ## How to Run
 
 1. Clone the repository.
-2. Configure the database connection in `application.properties`.
+2. Configure the database connection in `application.yml`.
 3. Build the project using Maven:
    ```bash
    mvn clean install
+4. A Postman collection is included in the project root directory (`Rootcode Practical Evaluation.postman_collection.json`) to help test all available API endpoints.
