@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public StandardResponse update(UserDTO userDTO) {
-        var existingUser = userRepository.findById((long) userDTO.getUserId())
+        var existingUser = userRepository.findById(userDTO.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userDTO.getUserId()));
 
         existingUser.setFullName(userDTO.getFullName());

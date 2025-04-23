@@ -2,6 +2,8 @@ package com.rootcode.practicalevaluation.services.borrow.impl;
 
 import com.rootcode.practicalevaluation.dto.responses.KeyValueDTO;
 import com.rootcode.practicalevaluation.dto.responses.StandardResponse;
+import com.rootcode.practicalevaluation.exceptions.BadRequestException;
+import com.rootcode.practicalevaluation.exceptions.ResourceNotFoundException;
 import com.rootcode.practicalevaluation.repository.BookRepository;
 import com.rootcode.practicalevaluation.repository.BorrowRecordRepository;
 import com.rootcode.practicalevaluation.repository.UserRepository;
@@ -14,10 +16,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BorrowServiceImpl implements BorrowService {
+
     @Autowired
     private BorrowRecordRepository borrowRepository;
 
@@ -27,27 +29,21 @@ public class BorrowServiceImpl implements BorrowService {
     @Autowired
     private UserRepository userRepository;
 
-    // Borrow a book
     @Override
     public StandardResponse borrowBook(Long bookId, String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isEmpty()) {
-            return new StandardResponse("400", "Invalid user. Please login again.", null);
-        }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("Invalid user. Please login again."));
 
-        Optional<Book> optionalBook = bookRepository.findById(Math.toIntExact(bookId));
-        if (optionalBook.isEmpty()) {
-            return new StandardResponse("404", "Book not found.", null);
-        }
+        Book book = bookRepository.findById(Math.toIntExact(bookId))
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found."));
 
-        Book book = optionalBook.get();
         if (book.getAvailableCopies() <= 0) {
-            return new StandardResponse("409", "Book is out of stock.", null);
+            throw new BadRequestException("Book is out of stock.");
         }
 
         BorrowRecord borrowRecord = new BorrowRecord();
         borrowRecord.setBook(book);
-        borrowRecord.setUser(optionalUser.get());
+        borrowRecord.setUser(user);
         borrowRecord.setBorrowedAt(LocalDateTime.now());
 
         book.setAvailableCopies(book.getAvailableCopies() - 1);
@@ -60,24 +56,20 @@ public class BorrowServiceImpl implements BorrowService {
         ));
     }
 
-
-    // Return a book
     @Override
     public StandardResponse returnBook(Long borrowId, String email) {
-        Optional<BorrowRecord> optionalBorrow = borrowRepository.findById(borrowId);
-        if (optionalBorrow.isEmpty()) {
-            return new StandardResponse("404", "Borrow record not found.", null);
-        }
-
-        BorrowRecord borrowRecord = optionalBorrow.get();
+        BorrowRecord borrowRecord = borrowRepository.findById(borrowId)
+                .orElseThrow(() -> new ResourceNotFoundException("Borrow record not found."));
 
         if (!borrowRecord.getUser().getEmail().equals(email)) {
-            return new StandardResponse("403", "You are not authorized to return this book.", null);
+            throw new BadRequestException("You are not authorized to return this book.");
         }
 
         borrowRecord.setReturnedAt(LocalDateTime.now());
+
         Book book = borrowRecord.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);
+
         bookRepository.save(book);
         borrowRepository.save(borrowRecord);
 
@@ -86,5 +78,4 @@ public class BorrowServiceImpl implements BorrowService {
                 new KeyValueDTO("returnedAt", borrowRecord.getReturnedAt().toString())
         ));
     }
-
 }

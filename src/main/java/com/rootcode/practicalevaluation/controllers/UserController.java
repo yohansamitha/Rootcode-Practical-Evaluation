@@ -32,15 +32,14 @@ public class UserController {
 
     // Get a user by ID
     @GetMapping("/{id}")
-    public ResponseEntity<StandardResponse> getUserById(@PathVariable Long id) {
+    public ResponseEntity<StandardResponse> getUserById(@PathVariable Integer id) {
         StandardResponse response = userService.findById(id);
         return ResponseEntity.ok(response);
     }
 
     // Update a user
-    @PutMapping("/{id}")
-    public ResponseEntity<StandardResponse> updateUser(@PathVariable Integer id, @Valid @RequestBody UserDTO userDTO) {
-        userDTO.setUserId(id); // Ensure the ID is set in the DTO
+    @PutMapping()
+    public ResponseEntity<StandardResponse> updateUser(@Valid @RequestBody UserDTO userDTO) {
         StandardResponse response = userService.update(userDTO);
         return ResponseEntity.ok(response);
     }
