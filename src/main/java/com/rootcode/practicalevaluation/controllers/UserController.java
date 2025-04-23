@@ -1,67 +1,46 @@
 package com.rootcode.practicalevaluation.controllers;
 
-
-import com.rootcode.practicalevaluation.repository.UserRepository;
-import com.rootcode.practicalevaluation.utils.mapping.User;
+import com.rootcode.practicalevaluation.dto.responses.StandardResponse;
+import com.rootcode.practicalevaluation.dto.user.UserDTO;
+import com.rootcode.practicalevaluation.services.user.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     // Create a new user
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User savedUser = userRepository.save(user);
-        return ResponseEntity.ok(savedUser);
-    }
-
-    // Get all users
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<StandardResponse> createUser(@Valid @RequestBody UserDTO userDTO) {
+        StandardResponse response = userService.insert(userDTO);
+        return ResponseEntity.ok(response);
     }
 
     // Get a user by ID
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        Optional<User> user = userRepository.findById(id);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<StandardResponse> getUserById(@PathVariable Long id) {
+        StandardResponse response = userService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     // Update a user
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.setFullName(userDetails.getFullName());
-            user.setEmail(userDetails.getEmail());
-            user.setPassword(userDetails.getPassword());
-            User updatedUser = userRepository.save(user);
-            return ResponseEntity.ok(updatedUser);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<StandardResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
+        userDTO.setUserId(Math.toIntExact(id)); // Ensure the ID is set in the DTO
+        StandardResponse response = userService.update(userDTO);
+        return ResponseEntity.ok(response);
     }
 
     // Delete a user
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<StandardResponse> deleteUser(@PathVariable Long id) {
+        StandardResponse response = userService.deleteById(id);
+        return ResponseEntity.ok(response);
     }
 }
