@@ -15,7 +15,7 @@ public class BorrowRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     // Many borrow records can belong to one user
     @ManyToOne

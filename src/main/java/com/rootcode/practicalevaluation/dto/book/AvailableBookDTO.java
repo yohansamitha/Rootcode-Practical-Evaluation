@@ -1,4 +1,4 @@
-package com.rootcode.practicalevaluation.dto;
+package com.rootcode.practicalevaluation.dto.book;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
