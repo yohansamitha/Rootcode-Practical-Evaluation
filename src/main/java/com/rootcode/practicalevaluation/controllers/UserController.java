@@ -39,15 +39,15 @@ public class UserController {
 
     // Update a user
     @PutMapping("/{id}")
-    public ResponseEntity<StandardResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
-        userDTO.setUserId(Math.toIntExact(id)); // Ensure the ID is set in the DTO
+    public ResponseEntity<StandardResponse> updateUser(@PathVariable Integer id, @Valid @RequestBody UserDTO userDTO) {
+        userDTO.setUserId(id); // Ensure the ID is set in the DTO
         StandardResponse response = userService.update(userDTO);
         return ResponseEntity.ok(response);
     }
 
     // Delete a user
     @DeleteMapping("/{id}")
-    public ResponseEntity<StandardResponse> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<StandardResponse> deleteUser(@PathVariable Integer id) {
         StandardResponse response = userService.deleteById(id);
         return ResponseEntity.ok(response);
     }
