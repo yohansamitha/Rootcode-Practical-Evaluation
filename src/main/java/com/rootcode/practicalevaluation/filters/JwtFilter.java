@@ -39,7 +39,7 @@ public class JwtFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        log.info("Incoming Request: {} ", request.getMethod());
+        log.info("Incoming Request: {} {}", request.getMethod(), request.getRequestURI());
 
         if (CommonFunctions.stringIsNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())) {
             log.warn("Missing or invalid Authorization header");

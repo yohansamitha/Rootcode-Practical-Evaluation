@@ -6,6 +6,7 @@ import com.rootcode.practicalevaluation.dto.responses.StandardResponse;
 import com.rootcode.practicalevaluation.repository.BookRepository;
 import com.rootcode.practicalevaluation.services.book.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -25,7 +26,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Cacheable(value = "bookSearch", key = "#author + '_' + #year")
     public StandardResponse searchAvailableBooks(String author, Integer year) {
+        System.out.println("Fetching from DB...");
         List<AvailableBookDTO> books = bookRepository.searchAvailableBooks(author, year);
         return new StandardResponse("200", "Filtered books retrieved successfully",
                 Collections.singletonList(new KeyValueDTO("books", books)));
