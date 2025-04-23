@@ -1,0 +1,13 @@
+package com.rootcode.practicalevaluation.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class AvailableBookDTO {
+    private String title;
+    private String author;
+    private int publishedYear;
+    private int availableCopies;
+}

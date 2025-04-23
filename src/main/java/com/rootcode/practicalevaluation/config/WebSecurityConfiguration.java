@@ -42,7 +42,9 @@ import java.util.Map;
 @EnableWebSecurity
 public class WebSecurityConfiguration {
 
-    private static final String[] AUTH_WHITELIST = {"/login/**"};
+    private static final String[] AUTH_WHITELIST = {"/login/**",
+            "/api/books/available",
+            "/api/books/search**"};
 
     @Autowired
     private ObjectMapper objectMapper;
