@@ -2,17 +2,9 @@ package com.rootcode.practicalevaluation.services.user;
 
 import com.rootcode.practicalevaluation.dto.responses.StandardResponse;
 import com.rootcode.practicalevaluation.dto.user.UserDTO;
+import com.rootcode.practicalevaluation.services.CrudService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService extends UserDetailsService {
-
-    StandardResponse insert(UserDTO t);
-
-    StandardResponse update(UserDTO u);
-
-    StandardResponse findById(Long id);
-
-    StandardResponse deleteById(Long id);
-
+public interface UserService extends UserDetailsService, CrudService<UserDTO, Long> {
     StandardResponse getBorrowingHistory(String userEmail);
 }
