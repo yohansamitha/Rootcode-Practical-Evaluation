@@ -1,5 +1,6 @@
 package com.rootcode.practicalevaluation.services.user.impl;
 
+import com.rootcode.practicalevaluation.dto.BorrowingHistoryDTO;
 import com.rootcode.practicalevaluation.dto.responses.KeyValueDTO;
 import com.rootcode.practicalevaluation.dto.responses.StandardResponse;
 import com.rootcode.practicalevaluation.dto.user.UserDTO;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -33,12 +35,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public StandardResponse getBorrowingHistory(String email) {
+        List<BorrowingHistoryDTO> history = userRepository.findHistoryByUserEmail(email);
+        return new StandardResponse("success", "History fetched successfully", Collections.singletonList(new KeyValueDTO("savedUser", history)));
+    }
+
+    @Override
     public StandardResponse insert(UserDTO userDTO) {
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Encode password
         var userEntity = mapper.map(userDTO, com.rootcode.practicalevaluation.utils.mapping.User.class);
         var savedUser = userRepository.save(userEntity);
         savedUser.setPassword(null);
-        return new StandardResponse("201", "User created successfully", Collections.singletonList(new KeyValueDTO("", mapper.map(savedUser, UserDTO.class))));
+        return new StandardResponse("201", "User created successfully", Collections.singletonList(new KeyValueDTO("savedUser", mapper.map(savedUser, UserDTO.class))));
     }
 
     @Override
@@ -54,7 +62,7 @@ public class UserServiceImpl implements UserService {
         }
         var updatedUser = userRepository.save(existingUser);
         updatedUser.setPassword(null);
-        return new StandardResponse("200", "User updated successfully", Collections.singletonList(new KeyValueDTO("", mapper.map(updatedUser, UserDTO.class))));
+        return new StandardResponse("200", "User updated successfully", Collections.singletonList(new KeyValueDTO("existingUser", mapper.map(updatedUser, UserDTO.class))));
     }
 
     @Override
@@ -64,7 +72,7 @@ public class UserServiceImpl implements UserService {
             return new StandardResponse("404", "User not found", null);
         }
         user.setPassword(null);
-        return new StandardResponse("200", "User retrieved successfully", Collections.singletonList(new KeyValueDTO("", mapper.map(user, UserDTO.class))));
+        return new StandardResponse("200", "User retrieved successfully", Collections.singletonList(new KeyValueDTO("user", mapper.map(user, UserDTO.class))));
     }
 
     @Override

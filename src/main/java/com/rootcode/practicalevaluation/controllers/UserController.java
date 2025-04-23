@@ -6,6 +6,7 @@ import com.rootcode.practicalevaluation.services.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,13 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping("/history")
+    public ResponseEntity<StandardResponse> getOwnBorrowingHistory(Authentication authentication) {
+        String userEmail = authentication.getName(); // Assuming email is the username
+        StandardResponse response = userService.getBorrowingHistory(userEmail);
+        return ResponseEntity.ok(response);
+    }
 
     // Create a new user
     @PostMapping
