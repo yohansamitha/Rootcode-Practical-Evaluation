@@ -24,7 +24,7 @@ public class UserController {
     }
 
     // Create a new user
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<StandardResponse> createUser(@Valid @RequestBody UserDTO userDTO) {
         StandardResponse response = userService.insert(userDTO);
         return ResponseEntity.ok(response);

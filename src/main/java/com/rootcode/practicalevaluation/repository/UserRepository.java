@@ -14,8 +14,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT U FROM User U WHERE U.email = :email")
     Optional<User> findByEmail(@Param("email") String email);
 
+    boolean existsByEmail(String email);
+
     @Query("SELECT new com.rootcode.practicalevaluation.dto.BorrowingHistoryDTO(" +
             "b.book.title, b.book.author, b.book.publishedYear, b.borrowedAt, b.returnedAt) " +
             "FROM BorrowRecord b WHERE b.user.email = :email")
     List<BorrowingHistoryDTO> findHistoryByUserEmail(String email);
+
 }
