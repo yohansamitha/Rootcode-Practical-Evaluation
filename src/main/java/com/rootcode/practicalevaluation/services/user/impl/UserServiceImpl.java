@@ -44,9 +44,8 @@ public class UserServiceImpl implements UserService {
     public StandardResponse insert(UserDTO userDTO) {
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Encode password
         var userEntity = mapper.map(userDTO, com.rootcode.practicalevaluation.utils.mapping.User.class);
-        var savedUser = userRepository.save(userEntity);
-        savedUser.setPassword(null);
-        return new StandardResponse("201", "User created successfully", Collections.singletonList(new KeyValueDTO("savedUser", mapper.map(savedUser, UserDTO.class))));
+        userRepository.save(userEntity);
+        return new StandardResponse("201", "User created successfully", null);
     }
 
     @Override
@@ -60,9 +59,8 @@ public class UserServiceImpl implements UserService {
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
             existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
-        var updatedUser = userRepository.save(existingUser);
-        updatedUser.setPassword(null);
-        return new StandardResponse("200", "User updated successfully", Collections.singletonList(new KeyValueDTO("existingUser", mapper.map(updatedUser, UserDTO.class))));
+        userRepository.save(existingUser);
+        return new StandardResponse("200", "User updated successfully", null);
     }
 
     @Override
