@@ -16,17 +16,18 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    @GetMapping("/available")
-    public ResponseEntity<StandardResponse> getAvailableBooks() {
-        StandardResponse response = bookService.getAvailableBooks();
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<StandardResponse> searchBooks(
+    // Single endpoint for both listing and searching books
+    @GetMapping
+    public ResponseEntity<StandardResponse> getBooks(
             @RequestParam(required = false) String author,
             @RequestParam(required = false) Integer year) {
-        return ResponseEntity.ok(bookService.searchAvailableBooks(author, year));
-    }
 
+        // If filters are provided, call search method
+        if (author != null || year != null) {
+            return ResponseEntity.ok(bookService.searchAvailableBooks(author, year));
+        }
+
+        // Else, return all available books
+        return ResponseEntity.ok(bookService.getAvailableBooks());
+    }
 }
